@@ -8,7 +8,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
 import time
 from keras.models import load_model
-import pygame
+
 
 prev_predection = 0
 
@@ -45,7 +45,7 @@ def model_training(dataset_path, model_name):
       image = np.expand_dims(image, axis=-1)
       image = np.expand_dims(image, axis=0)
       label = labels[i]
-      for _ in range(10):  # 각 이미지당 10장의 추가 생성
+      for _ in range(3):  # 각 이미지당 10장의 추가 생성
           for x_augmented, y_augmented in datagen.flow(image, [label], batch_size=1):
               augmented_images.append(np.squeeze(x_augmented))
               augmented_labels.append(y_augmented[0])
@@ -79,7 +79,7 @@ def model_training(dataset_path, model_name):
   # 모델 학습
   history = model.fit(x_train, y_train, epochs=100, batch_size=32, validation_data=(x_test, y_test))
 
-  model_name = "c:/Users/parksangwon/Documents/" + model_name +".h5" ##바꿔줘야해요
+  model_name = "C:\Users" + model_name +".h5" 
 
   model.save(model_name)
 
@@ -115,7 +115,7 @@ def preprocess_img(img):
     return gray
 
 
-user_input = input("데이터셋 파일의 위치와 모델 이름을 ","로 구분지어입력해주세요 :")
+user_input = input("데이터셋 파일의 위치와 모델 이름을 ,로 구분지어입력해주세요 :")
 file_add, model_naame = user_input.split(",")
 
 model_training(file_add, model_naame)

@@ -8,9 +8,10 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
 import time
 from keras.models import load_model
-import pygame
 
 prev_predection = 0
+
+names = ['right', 'left', 'down', 'hard drop', '90 spin', 'hold', 'normal']
 
 def find_h5_files(directory):
     h5_files = []
@@ -34,7 +35,7 @@ def preprocess_img(img):
 
 def camera_logic(model_addr):
 
-  model = load_model('model_addr')
+  model = load_model(model_addr)
   capture = cv2.VideoCapture(0)
   capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
   capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
@@ -44,19 +45,9 @@ def camera_logic(model_addr):
       preprocessed_img = preprocess_img(frame)
 
       # 예측
-      prediction = model.predict(preprocessed_img)
-
-      # 첫 번째 인덱스 확률이 가장 높으면 1 출력, 아니면 0 출력
-      prediction = np.argmax(prediction[0])
-
-      if prev_predection == 1 and prediction == 0:
-          time.sleep(1)
-          continue
-      
-      if prediction == 0 and prediction == 1:
-          prev_prediction = prediction
-          time.sleep(1)
-          continue
+      predictions = model.predict(preprocessed_img)
+      score = tf.nn.softmax(predictions[0])
+      print(names[np.argmax(score)])
 
       time.sleep(1)
 
@@ -88,5 +79,3 @@ while True:
         break
 
 camera_logic(model_add)
-
-capture.release()
